@@ -4,31 +4,50 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleApp4
+namespace PrintFarm
 {
-    class ImprimantaCuRasina : Imprimanta3D
+    public class ImprimantaRasina : Imprimanta
+{
+    public double CapacitateRasina { get; set; }
+    public double RasinaCurenta { get; set; }
+
+    public ImprimantaRasina(string nume, double capacitate) : base(nume)
     {
-        public double CapacitateRasina { get; set; } = 1000.0; // ml
-
-        public override void ProcesareComanda(Comanda comanda)
-        {
-            double consum = comanda.Masa * 2; // Exemplu: 2 ml/g
-            if (CapacitateRasina >= consum)
-            {
-                CapacitateRasina -= consum;
-                Status = "Imprimare în curs";
-                Console.WriteLine($"Comanda {comanda.NumeObiect} procesată cu rășină. Consum: {consum} ml.");
-            }
-            else
-            {
-                Console.WriteLine("Rășină insuficientă pentru a procesa comanda!");
-            }
-        }
-
-        public void AdaugaRasina(double cantitate)
-        {
-            CapacitateRasina += cantitate;
-            Console.WriteLine($"S-a adăugat {cantitate} ml de rășină. Capacitate actuală: {CapacitateRasina} ml.");
-        }
+        CapacitateRasina = capacitate;
+        RasinaCurenta = capacitate;
     }
+
+    public void AdaugaRasina(double cantitate)
+    {
+        RasinaCurenta = Math.Min(RasinaCurenta + cantitate, CapacitateRasina);
+    }
+
+    public override string Descriere()
+    {
+        return $"Imprimanta cu rasina '{Nume}' - Rasina curenta: {RasinaCurenta}/{CapacitateRasina} ml";
+    }
+}
+
+public class ImprimantaFilament : Imprimanta
+{
+    public string CuloareFilament { get; set; }
+    public double CantitateFilament { get; set; }
+
+    public ImprimantaFilament(string nume, string culoare, double cantitate) : base(nume)
+    {
+        CuloareFilament = culoare;
+        CantitateFilament = cantitate;
+    }
+
+    public void SchimbaFilament(string culoareNoua, double cantitateNoua)
+    {
+        CuloareFilament = culoareNoua;
+        CantitateFilament = cantitateNoua;
+    }
+
+    public override string Descriere()
+    {
+        return $"Imprimanta cu filament '{Nume}' - Culoare: {CuloareFilament}, Cantitate: {CantitateFilament} g";
+    }
+}
 }
